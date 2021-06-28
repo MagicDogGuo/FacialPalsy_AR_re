@@ -2271,8 +2271,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _requestedDeviceName: 
-  _requestedWidth: 300
-  _requestedHeight: 150
+  _requestedWidth: 640
+  _requestedHeight: 480
   _requestedIsFrontFacing: 1
   _requestedFPS: 29.94
   _rotate90Degree: 0

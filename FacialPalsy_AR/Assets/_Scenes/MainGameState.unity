@@ -339,7 +339,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 395431850}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -636}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -495,8 +495,11 @@ MonoBehaviour:
     type: 3}
   FakeCurseUICanvas: {fileID: 4752532440577627171, guid: dd1fbba6ba934584c8bcc58559bf4d98,
     type: 3}
+  ReDetectFaceCanvas: {fileID: 2086255717942940066, guid: be59e528e2b9a0a46aad24ec193180e6,
+    type: 3}
   gameOver: 0
   scrollSpeed: 300
+  isManualPause: 0
 --- !u!4 &717380766
 Transform:
   m_ObjectHideFlags: 0
@@ -518,7 +521,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 717380764}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c64859145e3976d4aacef885f09d3c67, type: 3}
   m_Name: 
@@ -1385,7 +1388,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 498.6, y: -1118.4}
+  m_AnchoredPosition: {x: 333.58, y: -615.4}
   m_SizeDelta: {x: 82.83984, y: 103.20929}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1446584162

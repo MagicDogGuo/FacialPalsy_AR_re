@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
+using DlibFaceLandmarkDetectorExample;
+using FaceTrackerExample;
 
 public class MainGameManager : MonoBehaviour
 {
@@ -65,6 +68,9 @@ public class MainGameManager : MonoBehaviour
 
     [SerializeField]
     public GameObject FakeCurseUICanvas;
+
+    [SerializeField]
+    GameObject ReDetectFaceCanvas;
 
 
     public bool gameOver = false;
@@ -181,7 +187,18 @@ public class MainGameManager : MonoBehaviour
         get { return giveScoreUICanvass; }
         set { giveScoreUICanvass = value; }
     }
-    
+
+    GameObject reDetectFaceCanvas;
+    public GameObject ReDetectFaceCanvass
+    {
+        get { return reDetectFaceCanvas; }
+    }
+
+    bool isDetectFace;
+    public bool IsDetectFace
+    {
+        get { return isDetectFace; }
+    }
 
     // 場景狀態
     MainGameStateControl m_MainGameStateController = new MainGameStateControl();
@@ -190,6 +207,10 @@ public class MainGameManager : MonoBehaviour
     {
         get { return m_MainGameStateController.GameState; }
     }
+
+    WebCamTextureToMatHelperExampleMine webCamTextureToMatHelperExampleMine = null;
+    FaceTrackerARExample FaceTrackerARExample = null;
+
 
     public void MainGameBegin()
     {
@@ -204,11 +225,18 @@ public class MainGameManager : MonoBehaviour
         masachiCompleteUICanvas = MasachiCompleteUICanvas;
         masachiInitUICanvas = MasachiInitUICanvas;
         giveScoreUICanvass = GiveScoreUICanvas;
+        reDetectFaceCanvas = ReDetectFaceCanvas;
+
+     
     }
 
     public void MainGameUpdate()
     {
         m_MainGameStateController.StateUpdate();
+        if (DetectQuads != null && webCamTextureToMatHelperExampleMine == null) webCamTextureToMatHelperExampleMine = DetectQuads.GetComponent<WebCamTextureToMatHelperExampleMine>();
+        if (DetectQuadsMasachis != null && FaceTrackerARExample == null) FaceTrackerARExample = DetectQuadsMasachis.GetComponent<FaceTrackerExample.FaceTrackerARExample>();
+
+        if (DetectQuads != null) isDetectFace = webCamTextureToMatHelperExampleMine.IsDetectFace;
     }
 
 
@@ -242,8 +270,12 @@ public class MainGameManager : MonoBehaviour
     /// <returns></returns>
     public bool WasTouchedOrClicked()
     {
-        if (Input.GetButtonUp("Jump") || Input.GetMouseButtonDown(0) ||
-            (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Ended))//DlibFaceLandmarkDetectorExample.WebCamTextureToMatHelperExampleMine.isBlink
+        if (DebugBtn.isDebug == false)
+        {
+            return false;
+        }
+        if (Input.GetMouseButtonDown(0)  ||
+           (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Ended))//DlibFaceLandmarkDetectorExample.WebCamTextureToMatHelperExampleMine.isBlink
         {
                 return true;
         }
@@ -253,4 +285,38 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
+    public bool isManualPause = false;
+
+    public void PauseGame()
+    {
+        if (!isManualPause)
+        {
+            MasachiVideoPlays.GetComponent<VideoPlayer>().Pause();
+            Time.timeScale = 0;
+        }
+          
+    }
+
+    public void PlayGame()
+    {
+        //WebCamTextureToMatHelperExampleMine webCamTextureToMatHelperExampleMine = null;
+        //FaceTrackerARExample FaceTrackerARExample = null;
+        //if (DetectQuads != null)
+        //{
+        //    webCamTextureToMatHelperExampleMine = DetectQuads.GetComponent<DlibFaceLandmarkDetectorExample.WebCamTextureToMatHelperExampleMine>();
+        //}
+        //if (DetectQuadsMasachis != null)
+        //{
+        //    FaceTrackerARExample = DetectQuadsMasachis.GetComponent<FaceTrackerExample.FaceTrackerARExample>();
+        //}
+
+        //if (webCamTextureToMatHelperExampleMine != null) webCamTextureToMatHelperExampleMine.OnPlayButtonClick();
+        //if (FaceTrackerARExample != null) FaceTrackerARExample.OnPlayButton();
+        if (!isManualPause)
+        {
+            MasachiVideoPlays.GetComponent<VideoPlayer>().Play();
+            Time.timeScale = 1;
+        }
+         
+    }
 }

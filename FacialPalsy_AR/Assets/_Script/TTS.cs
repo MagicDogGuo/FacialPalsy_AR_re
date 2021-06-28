@@ -8,12 +8,15 @@ public class TTS : MonoBehaviour
     string TimeS ;
     string say;
 
+    bool isSayNoFace = false;
     bool isSP00 = true;
     bool isSP01 = false;
     bool isSP02 = false;
     bool isSP03 = false;
     bool isSP04 = false;
     bool isSP05 = false;
+
+    float countTime = 0;
 
     DlibFaceLandmarkDetectorExample.WebCamTextureToMatHelperExampleMine webs;
     
@@ -22,6 +25,7 @@ public class TTS : MonoBehaviour
     {
         EasyTTSUtil.Initialize(EasyTTSUtil.Taiwan);
         webs = GetComponent<DlibFaceLandmarkDetectorExample.WebCamTextureToMatHelperExampleMine>();
+        countTime = 5;
     }
 
 
@@ -38,31 +42,41 @@ public class TTS : MonoBehaviour
             isSP05 = false;
         }
 
+        if(isSayNoFace == true)
+        {
+            countTime += Time.deltaTime;
+        }
+        if (webs.IsDetectFace == false && isSayNoFace==false && countTime >= 5)
+        {
+            say = "請重新偵測人臉";
+            EasyTTSUtil.SpeechAdd(say);
+            isSayNoFace = true;
+            countTime = 0;
+        }
 
         TimeS = "" + ((int)webs.COUNTER);
 
-        if(webs.COUNTER > 0.5f && webs.COUNTER <= 0.5f && isSP00==false)
-        {
-            say = "已閉眼0.5秒";
-            EasyTTSUtil.SpeechAdd(say);
-            isSP00 = true;
-        }
+        //if(webs.COUNTER > 0.5f && webs.COUNTER <= 0.5f && isSP00==false)
+        //{
+        //    say = "閉眼0.5秒";
+        //    EasyTTSUtil.SpeechAdd(say);
+        //    isSP00 = true;
+        //}
 
         switch ((int)webs.COUNTER)
         {
             case 1:
                 if (!isSP01)
                 {
-                    say = "已閉眼" + TimeS + "秒正在蓄力";
+                    say = "閉眼" + TimeS + "秒正在蓄力";
                     EasyTTSUtil.SpeechAdd(say);
                     isSP01 = true;
-                    Debug.Log("--------------------------------------"+say);
                 }
                 break;
             case 2:
                 if (!isSP02)
                 {
-                    say = "已閉眼" + TimeS + "秒";
+                    say = "閉眼" + TimeS + "秒";
                     EasyTTSUtil.SpeechAdd(say);
                     isSP02 = true;
                 }
@@ -70,7 +84,7 @@ public class TTS : MonoBehaviour
             case 3:
                 if (!isSP03)
                 {
-                    say = "已閉眼" + TimeS + "秒蓄力完成請張眼";
+                    say = "閉眼" + TimeS + "秒蓄力完成請張眼";
                     EasyTTSUtil.SpeechAdd(say);
                     isSP03 = true;
                 }

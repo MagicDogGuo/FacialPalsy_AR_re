@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DlibFaceLandmarkDetectorExample;
 
 public class DebugBtn : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class DebugBtn : MonoBehaviour
 
     Button _btn;
 
+   public static bool isDebug = false;
 
     // Start is called before the first frame update
     void Start()
@@ -22,12 +24,17 @@ public class DebugBtn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-  
+        //測適用
+        if (Input.GetMouseButtonDown(0 ) && isDebug)
+        {
+            WebCamTextureToMatHelperExampleMine.TOTAL += 1;
+        }
     }
 
     void OnPushBtn()
     {
-        foreach(var btn in debugBtn)
+        isDebug = !isDebug;
+        foreach (var btn in debugBtn)
         {
             btn.SetActive(!btn.active);
         }

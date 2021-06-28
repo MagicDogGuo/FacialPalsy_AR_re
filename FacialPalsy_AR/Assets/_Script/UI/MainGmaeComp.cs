@@ -67,32 +67,20 @@ public class MainGmaeComp : MonoBehaviour
 
     void OnPushStopBtnn()
     {
-        DlibFaceLandmarkDetectorExample.WebCamTextureToMatHelperExampleMine webCamTextureToMatHelperExampleMine=null;
-        FaceTrackerExample.FaceTrackerARExample FaceTrackerARExample = null;
+     
         pauseTime++;
-        if (MainGameManager.Instance.DetectQuads != null)
-        {
-            webCamTextureToMatHelperExampleMine = MainGameManager.Instance.DetectQuads.GetComponent<DlibFaceLandmarkDetectorExample.WebCamTextureToMatHelperExampleMine>();
-        }
-        if (MainGameManager.Instance.DetectQuadsMasachis != null)
-        {
-            FaceTrackerARExample = MainGameManager.Instance.DetectQuadsMasachis.GetComponent<FaceTrackerExample.FaceTrackerARExample>();
-        }
-
+   
         if (pauseTime % 2 == 1) {
             StopBtn.GetComponent<Image>().sprite = StopBtnSprit02;
-            if (webCamTextureToMatHelperExampleMine!=null) webCamTextureToMatHelperExampleMine.OnPauseButtonCkick();
-            if (FaceTrackerARExample != null) FaceTrackerARExample.OnPauseButton();
-            MainGameManager.Instance.MasachiVideoPlays.GetComponent<VideoPlayer>().Pause();
-            Time.timeScale = 0;
+            MainGameManager.Instance.PauseGame();
+            MainGameManager.Instance.isManualPause = true;
         }
         else
         {
             StopBtn.GetComponent<Image>().sprite = StopBtnSprit01;
-            if (webCamTextureToMatHelperExampleMine != null) webCamTextureToMatHelperExampleMine.OnPlayButtonClick();
-            if (FaceTrackerARExample != null) FaceTrackerARExample.OnPlayButton();
-            MainGameManager.Instance.MasachiVideoPlays.GetComponent<VideoPlayer>().Play();
-            Time.timeScale = 1;
+            MainGameManager.Instance.PlayGame();
+            MainGameManager.Instance.isManualPause = false;
+
         }
 
     }

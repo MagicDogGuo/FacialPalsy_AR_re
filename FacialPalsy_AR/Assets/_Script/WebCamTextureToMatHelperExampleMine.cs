@@ -66,6 +66,20 @@ namespace DlibFaceLandmarkDetectorExample
         public  bool isBlink = false;
         public static UnityAction BlinkingEye;
 
+
+        float noDetectFaceTime = 50; //秒
+        float reDetectFaceTime = 60; //frame
+
+        [HideInInspector]
+        public static float TimeCloseEyeCount = 0;
+        float _countNoDetextFace = 0;
+        float _countReDetextFace = 0;
+
+        GameObject _reDetectFaceCanvass;
+
+        bool isOpenReDetevtUI=false;
+        public bool IsDetectFace = false;
+
 #if UNITY_WEBGL
         IEnumerator getFilePath_Coroutine;
 #endif
@@ -143,9 +157,17 @@ namespace DlibFaceLandmarkDetectorExample
 
             float width = webCamTextureMat.width();
             float height = webCamTextureMat.height();
+#if UNITY_EDITOR
+            float widthScale = 1;
+            float heightScale = 1;
+#else
 
-            float widthScale = 1; //(float)Screen.width / width;
-            float heightScale = 1;//(float)Screen.height / height;//////////////////////////////////////////
+            float widthScale = (float)Screen.width / width;
+            float heightScale =(float)Screen.height / height;
+#endif
+            Debug.Log("webCamTextureMat.width"+ width + " webCamTextureMat.height" + height);
+            Debug.Log("Screen.width" + Screen.width + "Screen.height" + Screen.height);
+
             if (widthScale < heightScale)
             {
                 Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
@@ -169,9 +191,7 @@ namespace DlibFaceLandmarkDetectorExample
                 texture = null;
             }
         }
-        [HideInInspector]
-        public static float TimeCloseEyeCount = 0;
-        float _countNoDetextFace = 0;
+
 
         /// <summary>
         /// Raises the web cam texture to mat helper error occurred event.
@@ -190,13 +210,7 @@ namespace DlibFaceLandmarkDetectorExample
         // Update is called once per frame
         void Update()
         {
-            //測適用
-            if (Input.GetMouseButtonDown(0))
-            {
-                TOTAL += 1;
-            }
-
-
+   
 
             if (webCamTextureToMatHelper.IsPlaying() && webCamTextureToMatHelper.DidUpdateThisFrame())
             {
@@ -215,16 +229,54 @@ namespace DlibFaceLandmarkDetectorExample
                     if (detectResult.Count < 1)
                     {
                         Debug.Log("沒有人臉");
+                        IsDetectFace = false;
 
-                        //人臉沒測到0.8以上
-                        _countNoDetextFace += Time.deltaTime;
-                        if (_countNoDetextFace > 0.8f)
+                        if (isOpenReDetevtUI == false)
                         {
-                            COUNTER = 0;
+                            //人臉沒測到0.8s以上，暫停遊戲 重新偵測臉
+                            _countNoDetextFace += 1;
+                            if (_countNoDetextFace > noDetectFaceTime)
+                            {
+                                _countReDetextFace = 0;
+                                if (_reDetectFaceCanvass == null) _reDetectFaceCanvass = Instantiate(MainGameManager.Instance.ReDetectFaceCanvass);
+                                isOpenReDetevtUI = true;
+                                MainGameManager.Instance.PauseGame();
+
+                            }
                         }
+                     
                     }
+                    else
+                    {
+                       if(isOpenReDetevtUI == false)
+                        {
+                            _countNoDetextFace = 0;
+                        }
+                        IsDetectFace = true;
+                        // _countReDetextFace += Time.deltaTime;
+
+                        if (isOpenReDetevtUI == true)
+                        {
+                            _countReDetextFace += 1;
+                            if ((int)_countReDetextFace == reDetectFaceTime)
+                            {
+                                _countNoDetextFace = 0;
+
+                                Destroy(_reDetectFaceCanvass);
+                                isOpenReDetevtUI = false;
+                                MainGameManager.Instance.PlayGame();
+
+                            }
+                        }
+                       
+                    }
+
+                    Debug.Log("_countNoDetextFace" + _countNoDetextFace + "_countReDetextFace" + _countReDetextFace);
+
                 }
-                isBlink = false;
+
+
+                //isBlink = false;
 
                 foreach (var rect in detectResult)
                 {
@@ -261,7 +313,7 @@ namespace DlibFaceLandmarkDetectorExample
                             if (MainGameManager.Instance.BirdisTouchCanStand)
                             {
                                 TOTAL += 1;
-                                isBlink = true;
+                                //isBlink = true;
                                 if (BlinkingEye != null) BlinkingEye();
                             }
      
